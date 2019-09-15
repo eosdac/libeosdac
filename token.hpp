@@ -9,7 +9,7 @@ namespace eosdac {
 
         namespace types {
 
-            struct [[eosio::table]] member_type {
+            struct [[table]] member_type {
                 name     sender;
                 uint64_t agreedtermsversion;
 
@@ -17,7 +17,7 @@ namespace eosdac {
             };
 
 
-            struct [[eosio::table]] termsinfo_type {
+            struct [[table]] termsinfo_type {
                 string   terms;
                 string   hash;
                 uint64_t version;
