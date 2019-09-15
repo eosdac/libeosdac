@@ -1,4 +1,6 @@
 
+#include <eosio/eosio.hpp>
+#include <eosio/symbol.hpp>
 
 namespace eosdac {
     namespace token {

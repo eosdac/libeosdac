@@ -5,6 +5,7 @@
 namespace eosdac {
     namespace directory {
         using namespace eosio;
+        using namespace std;
 
         namespace types {
 
@@ -36,32 +37,32 @@ namespace eosdac {
                 dac_state_typeACTIVE = 1
             };
 
-            struct [[eosio::table("dacs"), eosio::contract("dacdirectory")]] dac {
-                eosio::name         owner;
-                eosio::name         dac_id;
-                std::string         title;
-                eosio::extended_symbol       symbol;
-                std::map<uint8_t, std::string> refs;
-                std::map<uint8_t, eosio::name> accounts;
+            struct [[table("dacs"), contract("dacdirectory")]] dac {
+                name         owner;
+                name         dac_id;
+                string         title;
+                extended_symbol       symbol;
+                map<uint8_t, string> refs;
+                map<uint8_t, name> accounts;
                 uint8_t      dac_state;
 
-                eosio::name account_for_type( uint8_t type) const {
-                    eosio::print("\ngetting account for type: ", type,"\n");
+                name account_for_type( uint8_t type) const {
+                    print("\ngetting account for type: ", type,"\n");
                     return accounts.at(type);
                 }
 
                 uint64_t primary_key() const { return dac_id.value; }
                 uint64_t by_owner() const { return owner.value; }
-                uint128_t by_symbol() const { return eosdac::raw_from_extended_symbol(symbol); }
+                uint128_t by_symbol() const { return raw_from_extended_symbol(symbol); }
             };
         }
 
         namespace tables {
             using namespace types;
 
-            typedef eosio::multi_index< "dacs"_n,  dac,
-                    eosio::indexed_by<"byowner"_n, eosio::const_mem_fun<dac, uint64_t, &dac::by_owner>>,
-            eosio::indexed_by<"bysymbol"_n, eosio::const_mem_fun<dac, uint128_t, &dac::by_symbol>>
+            typedef multi_index< "dacs"_n,  dac,
+                    indexed_by<"byowner"_n, const_mem_fun<dac, uint64_t, &dac::by_owner>>,
+            indexed_by<"bysymbol"_n, const_mem_fun<dac, uint128_t, &dac::by_symbol>>
             > dac_table;
         }
 
@@ -74,12 +75,12 @@ namespace eosdac {
             return dactable.get(id.value, "ERR::DAC_NOT_FOUND::DAC not found in directory");
         }
 
-        const types::dac dac_for_symbol(eosio::extended_symbol sym) {
+        const types::dac dac_for_symbol(extended_symbol sym) {
             tables::dac_table dactable("dacdirectory"_n, "dacdirectory"_n.value);
             auto index = dactable.get_index<"bysymbol"_n>();
-            auto dac_idx = index.find(eosdac::raw_from_extended_symbol(sym));
+            auto dac_idx = index.find(raw_from_extended_symbol(sym));
             print("\ndac_for_symbol: ", sym, "\n");
-            eosio::check(dac_idx != index.end() && dac_idx->symbol == sym, "ERR::DAC_NOT_FOUND_SYMBOL::DAC not found in directory for the given symbol");
+            check(dac_idx != index.end() && dac_idx->symbol == sym, "ERR::DAC_NOT_FOUND_SYMBOL::DAC not found in directory for the given symbol");
             return *dac_idx;
         }
     }
