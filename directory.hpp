@@ -37,7 +37,7 @@ namespace eosdac {
                 dac_state_typeACTIVE = 1
             };
 
-            struct [[table]] dac {
+            struct [[eosio::table]] dac {
                 name         owner;
                 name         dac_id;
                 string         title;
