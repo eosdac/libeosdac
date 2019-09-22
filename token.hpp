@@ -22,11 +22,6 @@ namespace eosdac {
                 string   hash;
                 uint64_t version;
 
-                termsinfo_type() : terms(""), hash(""), version(0) {}
-
-                termsinfo_type(string _terms, string _hash, uint64_t _version)
-                              : terms(_terms), hash(_hash), version(_version) {}
-
                 uint64_t primary_key() const { return version; }
                 uint64_t by_latest_version() const { return UINT64_MAX - version; }
             };
