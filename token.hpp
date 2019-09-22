@@ -9,7 +9,7 @@ namespace eosdac {
 
         namespace types {
 
-            struct [[table]] member_type {
+            struct [[eosio::table]] member_type {
                 name     sender;
                 uint64_t agreedtermsversion;
 
@@ -17,13 +17,30 @@ namespace eosdac {
             };
 
 
-            struct [[table]] termsinfo_type {
+            struct [[eosio::table]] termsinfo_type {
                 string   terms;
                 string   hash;
                 uint64_t version;
 
                 uint64_t primary_key() const { return version; }
                 uint64_t by_latest_version() const { return UINT64_MAX - version; }
+            };
+
+
+            // Standard token contract tables
+            struct [[eosio::table]] account_type {
+                asset    balance;
+
+                uint64_t primary_key()const { return balance.symbol.code().raw(); }
+            };
+
+            struct [[eosio::table]] stat_type {
+                asset    supply;
+                asset    max_supply;
+                name     issuer;
+                bool     transfer_locked = false;
+
+                uint64_t primary_key()const { return supply.symbol.code().raw(); }
             };
 
         }
@@ -37,6 +54,8 @@ namespace eosdac {
                     indexed_by<"bylatestver"_n, const_mem_fun<termsinfo_type, uint64_t, &termsinfo_type::by_latest_version> >
             > member_terms_table;
 
+            typedef multi_index< "accounts"_n, account_type > account_table;
+            typedef multi_index< "stat"_n, stat_type > stat_table;
         }
 
         namespace actions {
